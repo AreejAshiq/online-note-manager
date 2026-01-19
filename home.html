@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Note Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <a href="{{ url_for('home') }}" class="logo">Online Note Manager</a>
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div id="app-data" data-notes='{{ notes | tojson }}'
+            data-is-authenticated="{{ 'true' if is_authenticated else 'false' }}">
+        </div>
+
+        <div class="split-view-container">
+
+            <div class="sidebar">
+                <h1>{% if is_authenticated %}Welcome, {{ current_user.username }}!{% else %}Guest Mode{% endif %}</h1>
+
+                <div class="create-form-toggle-area">
+                    <button id="toggle-note-form-btn" class="btn save-btn full-width-btn">
+                        ➕ Create New Note
+                    </button>
+                </div>
+
+                <div id="note-creation-form" class="note-creation-form hidden-form">
+                    <label for="note-title-input" class="form-label">Title</label>
+                    <input type="text" id="note-title-input" required>
+
+                    <label for="note-content-input" class="form-label">Content</label>
+                    <textarea id="note-content-input" placeholder="Start typing your note here..." required></textarea>
+
+                    <label for="note-category-input" class="form-label">Category</label>
+                    <select id="note-category-input" class="form-control" title="Select Category">
+                        <option value="Miscellaneous">Miscellaneous</option>
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Study">Study</option>
+                    </select>
+
+                    <label for="reminder-date-input" class="form-label">Reminder Date</label>
+                    <input type="datetime-local" id="reminder-date-input" class="form-control"
+                        title="Set a Reminder Date and Time">
+
+                    <div class="form-actions">
+                        <button id="pin-note-btn" type="button" class="btn pin-btn" data-pinned="false">
+                            <span id="pin-icon">📍</span> Pin
+                        </button>
+                        <button id="save-note-btn" class="btn save-btn">Save Note</button>
+                    </div>
+                </div>
+
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search notes..." class="form-control">
+                </div>
+
+                <h2>Your Notes</h2>
+                {% if not is_authenticated %}
+                <p class="guest-message-small">Your notes are local. <a href="{{ url_for('login') }}">Log in to
+                        save.</a></p>
+                {% endif %}
+
+                <div id="notes-list" class="notes-list-sidebar">
+                </div>
+            </div>
+
+            <div class="main-note-area">
+
+                <div id="bulk-actions" class="bulk-actions-container hidden">
+                    <span id="selected-count">0 notes selected</span>
+                    <button id="bulk-edit-btn" class="action-btn edit-btn" disabled>Edit</button>
+                    <button id="bulk-download-btn" class="action-btn download-btn">Download</button>
+                    <button id="bulk-delete-btn" class="action-btn delete-btn">Delete</button>
+                </div>
+
+                <div id="note-detail-view" class="note-detail-view">
+                    <p class="placeholder-text">Select a note from the sidebar to view its content.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Awesome App. All rights reserved.</p>
+    </footer>
+
+    <div id="edit-note-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Edit Note</h2>
+
+            <input type="hidden" id="edit-note-id">
+
+            <label for="edit-title">Title</label>
+            <input type="text" id="edit-title" required>
+
+            <label for="edit-content">Content</label>
+            <textarea id="edit-content" rows="6" required></textarea>
+
+            <div class="modal-controls">
+
+                <div class="modal-group">
+                    <label for="edit-category">Category</label>
+                    <select id="edit-category">
+                        <option value="Miscellaneous">Miscellaneous</option>
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Study">Study</option>
+                    </select>
+                </div>
+
+                <div class="modal-group">
+                    <label for="edit-reminder-date">Reminder</label>
+                    <input type="datetime-local" id="edit-reminder-date">
+                </div>
+            </div>
+
+            <div class="modal-footer-actions">
+                <button id="edit-pin-btn" type="button" class="btn pin-btn" data-pinned="false">
+                    <span id="edit-pin-icon">📍</span> Pin Note
+                </button>
+                <button id="save-edit-btn" class="btn save-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

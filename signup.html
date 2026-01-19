@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body>
+    <header class="header">
+        <a href="{{ url_for('home') }}" class="logo">Online Note Manager</a>
+    </header>
+    <div class="main-container">
+        <div class="container">
+            <h1>Create Account</h1>
+
+            <form action="{{ url_for('signup') }}" method="post">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Username" required
+                        class="input-field">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required
+                        class="input-field">
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+
+            <div class="link" style="margin-top: 15px;">
+                <a href="{{ url_for('home') }}">← Go back to Home</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
